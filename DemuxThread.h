@@ -1,4 +1,3 @@
-#pragma once
 #ifndef __DEMUXTHREAD__H_
 #define __DEMUXTHREAD__H_
 
@@ -37,8 +36,6 @@ public:
 	int GetBlockTime();
 
 private:
-	static int decode_interrupt_cb(void* arg);
-
 	std::string url_;
 	AVFormatContext* infmt_ctx = NULL;
 	int video_stream_idx_ = -1;

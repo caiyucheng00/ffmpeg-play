@@ -1,5 +1,4 @@
 #include "DemuxThread.h"
-#include <thread>
 
 DemuxThread::DemuxThread(AVPacketQueue* audio_packet_queue, AVPacketQueue* video_packet_queue) :
 	audio_packet_queue_(audio_packet_queue),
@@ -31,8 +30,6 @@ int DemuxThread::Init(const char* url)
 
 	//2.分配解复用器上下文
 	infmt_ctx = avformat_alloc_context();
-	//infmt_ctx->interrupt_callback.callback = decode_interrupt_cb;
-	//infmt_ctx->interrupt_callback.opaque = this;
 	ResetTime();
 	ret = avformat_open_input(&infmt_ctx, url_.c_str(), NULL, NULL);
 	if (ret < 0) {
@@ -179,15 +176,4 @@ void DemuxThread::ResetTime()
 int DemuxThread::GetBlockTime()
 {
 	return TimesUtil::GetTimeMillisecond() - pre_time_;
-}
-
-int DemuxThread::decode_interrupt_cb(void* arg)
-{
-	DemuxThread* demux_thread = (DemuxThread*)arg;
-	if (demux_thread->IsTimeout()) {
-		printf("Timeout:%dms\n", demux_thread->GetBlockTime());
-		return 1;
-	}
-
-	return 0;
 }
